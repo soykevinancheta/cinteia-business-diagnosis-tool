@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnóstico de Negocio - Cinteia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-gray-900 to-black text-white min-h-screen flex items-center justify-center p-6">
+
+  <div class="w-full max-w-lg">
+
+    <!-- HEADER -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold mb-2">
+        Diagnóstico de Negocio
+      </h1>
+      <p class="text-gray-400">
+        Descubre por qué tu negocio no está creciendo 🚀
+      </p>
+    </div>
+
+    <!-- CARD -->
+    <div class="bg-gray-800/80 backdrop-blur p-8 rounded-2xl shadow-2xl border border-gray-700">
+
+      <!-- PREGUNTAS -->
+      <div class="mb-5">
+        <label class="block mb-2 text-sm text-gray-300">¿Tienes clientes constantes?</label>
+        <select id="q1" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
+          <option value="">Seleccionar</option>
+          <option value="0">Sí</option>
+          <option value="1">No</option>
+        </select>
+      </div>
+
+      <div class="mb-5">
+        <label class="block mb-2 text-sm text-gray-300">¿Usas publicidad online?</label>
+        <select id="q2" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
+          <option value="">Seleccionar</option>
+          <option value="0">Sí</option>
+          <option value="1">No</option>
+        </select>
+      </div>
+
+      <div class="mb-6">
+        <label class="block mb-2 text-sm text-gray-300">¿Tienes una web o landing?</label>
+        <select id="q3" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
+          <option value="">Seleccionar</option>
+          <option value="0">Sí</option>
+          <option value="1">No</option>
+        </select>
+      </div>
+
+      <!-- BOTÓN -->
+      <button onclick="analyze()" 
+        class="w-full bg-white text-black p-3 rounded-xl font-semibold hover:bg-gray-300 transition transform hover:scale-105">
+        Analizar mi negocio
+      </button>
+
+      <!-- RESULTADO -->
+      <div id="result" class="mt-6 text-sm text-gray-200 leading-relaxed"></div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <div class="text-center mt-6 text-sm text-gray-500">
+      <a href="/tools/" class="hover:text-white transition">
+        ← Volver a herramientas
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    function analyze() {
+      const q1 = document.getElementById("q1").value;
+      const q2 = document.getElementById("q2").value;
+      const q3 = document.getElementById("q3").value;
+
+      if (q1 === "" || q2 === "" || q3 === "") {
+        document.getElementById("result").innerHTML = "⚠️ Responde todas las preguntas";
+        return;
+      }
+
+      let score = parseInt(q1) + parseInt(q2) + parseInt(q3);
+      let message = "";
+
+      if (score === 0) {
+        message = "🔥 <strong>Tu negocio está bien encaminado</strong>, pero puedes escalar con mejores estrategias.";
+      } else if (score === 1) {
+        message = "⚡ <strong>Hay oportunidades claras de mejora</strong> en tu estrategia digital.";
+      } else if (score === 2) {
+        message = "🚨 <strong>Tu negocio necesita optimización urgente</strong> en marketing y presencia online.";
+      } else {
+        message = "❌ <strong>Estás perdiendo oportunidades importantes</strong>. Necesitas estructura digital ya.";
+      }
+
+      message += "<br><br><span class='text-white font-semibold'>👉 Si quieres mejorar esto, contáctame en Cinteia.</span>";
+
+      document.getElementById("result").innerHTML = message;
+    }
+  </script>
+
+</body>
+</html>
