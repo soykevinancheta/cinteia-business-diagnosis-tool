@@ -1,105 +1,507 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Diagnóstico de Negocio - Cinteia</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Diagnóstico de Negocio — Cinteia Tools</title>
+<meta name="description" content="Descubrí qué le falta a tu negocio para crecer. Diagnóstico gratuito en 60 segundos.">
+
+<meta property="og:title" content="Diagnóstico de Negocio | Cinteia Tools">
+<meta property="og:description" content="Analizá tu negocio en segundos y encontrá oportunidades de mejora.">
+<meta property="og:image" content="https://cinteia.com/assets/img/webcinteia.jpg">
+<meta property="og:url" content="https://cinteia.com/tools/business-diagnosis-tool/">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="/assets/img/faviconc.ico">
+<link rel="apple-touch-icon" href="/tools/assets/img/icon-192.png">
+<link rel="canonical" href="https://cinteia.com/tools/business-diagnosis-tool/">
+<link rel="manifest" href="/tools/manifest.json">
+<meta name="theme-color" content="#080808">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="../assets/css/main.css">
+
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+  .wrapper { width: 100%; max-width: 500px; }
+
+  .topnav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+
+  .tool-header { margin-bottom: 32px; }
+  .tool-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .tool-header h1 {
+    font-size: 1.9rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  .tool-header p {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* STEP INDICATOR */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    justify-content: center;
+  }
+  .step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 100px;
+    background: var(--muted2);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .step-dot.active {
+    width: 24px;
+    background: white;
+  }
+  .step-dot.done {
+    background: var(--green);
+  }
+
+  /* QUESTION CARDS */
+  .question-view {
+    display: none;
+  }
+  .question-view.active {
+    display: block;
+    animation: fadeUp 0.3s ease both;
+  }
+
+  .q-number {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 28px;
+  }
+
+  .answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .answer-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .answer-btn:hover {
+    border-color: var(--border-h);
+    background: rgba(255,255,255,0.07);
+    transform: translateX(4px);
+  }
+  .answer-btn.selected {
+    border-color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.08);
+  }
+  .answer-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  /* RESULT */
+  .score-ring-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  .score-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .score-big {
+    font-family: 'Syne', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-sub {
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  .findings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .finding-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    animation: fadeUp 0.3s ease both;
+  }
+  .finding-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .finding-text { color: var(--text); }
+  .finding-text strong { font-weight: 600; }
+
+  .restart-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-top: 16px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .restart-btn:hover { border-color: var(--border-h); color: var(--text); }
+
+  /* Progress bar */
+  .progress-bar-track {
+    height: 2px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: white;
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+</style>
 </head>
+<body>
 
-<body class="bg-gradient-to-br from-gray-900 to-black text-white min-h-screen flex items-center justify-center p-6">
+<div class="wrapper">
 
-  <div class="w-full max-w-lg">
+  <!-- TOP NAV -->
+  <div class="topnav">
+    <a href="../" class="back-link">
+      <i class="fas fa-arrow-left" style="font-size:0.75rem;"></i> Herramientas
+    </a>
+    <a href="https://github.com/soykevinancheta/cinteia-business-diagnosis-tool" target="_blank" rel="noopener" class="btn btn-ghost btn-icon" style="width:36px;height:36px;font-size:0.9rem;" title="Ver código">
+      <i class="fab fa-github"></i>
+    </a>
+  </div>
 
-    <!-- HEADER -->
-    <div class="text-center mb-8">
-      <h1 class="text-3xl font-bold mb-2">
-        Diagnóstico de Negocio
-      </h1>
-      <p class="text-gray-400">
-        Descubre por qué tu negocio no está creciendo 🚀
-      </p>
+  <!-- HEADER -->
+  <div class="tool-header">
+    <div class="tool-badge"><i class="fas fa-stethoscope"></i> Diagnóstico</div>
+    <h1>Diagnóstico de Negocio</h1>
+    <p>5 preguntas rápidas. Descubrís exactamente qué le falta a tu negocio para crecer.</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="card" id="quiz-card">
+
+    <!-- PROGRESS -->
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
     </div>
 
-    <!-- CARD -->
-    <div class="bg-gray-800/80 backdrop-blur p-8 rounded-2xl shadow-2xl border border-gray-700">
+    <!-- STEP DOTS -->
+    <div class="step-indicator" id="step-dots"></div>
 
-      <!-- PREGUNTAS -->
-      <div class="mb-5">
-        <label class="block mb-2 text-sm text-gray-300">¿Tienes clientes constantes?</label>
-        <select id="q1" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
-          <option value="">Seleccionar</option>
-          <option value="0">Sí</option>
-          <option value="1">No</option>
-        </select>
+    <!-- PREGUNTAS -->
+    <div id="questions-container"></div>
+
+    <!-- RESULTADO -->
+    <div id="result-view" style="display:none; animation: fadeUp 0.4s ease;">
+      <div class="score-ring-wrap">
+        <div class="score-label">Puntaje de salud digital</div>
+        <div class="score-big" id="score-num">—</div>
+        <div class="score-sub" id="score-level">—</div>
       </div>
-
-      <div class="mb-5">
-        <label class="block mb-2 text-sm text-gray-300">¿Usas publicidad online?</label>
-        <select id="q2" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
-          <option value="">Seleccionar</option>
-          <option value="0">Sí</option>
-          <option value="1">No</option>
-        </select>
-      </div>
-
-      <div class="mb-6">
-        <label class="block mb-2 text-sm text-gray-300">¿Tienes una web o landing?</label>
-        <select id="q3" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white">
-          <option value="">Seleccionar</option>
-          <option value="0">Sí</option>
-          <option value="1">No</option>
-        </select>
-      </div>
-
-      <!-- BOTÓN -->
-      <button onclick="analyze()" 
-        class="w-full bg-white text-black p-3 rounded-xl font-semibold hover:bg-gray-300 transition transform hover:scale-105">
-        Analizar mi negocio
+      <div class="divider"></div>
+      <div class="findings-list" id="findings-list"></div>
+      <button class="restart-btn" onclick="restartQuiz()">
+        <i class="fas fa-redo" style="font-size:0.75rem;"></i> Hacer de nuevo
       </button>
-
-      <!-- RESULTADO -->
-      <div id="result" class="mt-6 text-sm text-gray-200 leading-relaxed"></div>
-
-    </div>
-
-    <!-- FOOTER -->
-    <div class="text-center mt-6 text-sm text-gray-500">
-      <a href="/tools/" class="hover:text-white transition">
-        ← Volver a herramientas
-      </a>
     </div>
 
   </div>
 
-  <script>
-    function analyze() {
-      const q1 = document.getElementById("q1").value;
-      const q2 = document.getElementById("q2").value;
-      const q3 = document.getElementById("q3").value;
+  <!-- CTA -->
+  <div class="cta-strip" id="cta" style="display:none;">
+    <span>¿Querés resolver estos puntos?</span>
+    <a href="https://cinteia.com" target="_blank" rel="noopener">Hablemos →</a>
+  </div>
 
-      if (q1 === "" || q2 === "" || q3 === "") {
-        document.getElementById("result").innerHTML = "⚠️ Responde todas las preguntas";
-        return;
-      }
+  <div style="text-align:center; margin-top:32px;">
+    <a href="https://cinteia.com/tools" class="back-link" style="font-size:0.78rem;">
+      <i class="fas fa-th"></i> Ver todas las herramientas
+    </a>
+  </div>
 
-      let score = parseInt(q1) + parseInt(q2) + parseInt(q3);
-      let message = "";
+</div>
 
-      if (score === 0) {
-        message = "🔥 <strong>Tu negocio está bien encaminado</strong>, pero puedes escalar con mejores estrategias.";
-      } else if (score === 1) {
-        message = "⚡ <strong>Hay oportunidades claras de mejora</strong> en tu estrategia digital.";
-      } else if (score === 2) {
-        message = "🚨 <strong>Tu negocio necesita optimización urgente</strong> en marketing y presencia online.";
-      } else {
-        message = "❌ <strong>Estás perdiendo oportunidades importantes</strong>. Necesitas estructura digital ya.";
-      }
+<script src="../assets/js/main.js"></script>
+<script>
+const QUESTIONS = [
+  {
+    id: 'clientes',
+    text: '¿Tu negocio tiene clientes constantes y recurrentes?',
+    options: [
+      { label: 'Sí, tengo clientes que vuelven', value: 2, icon: '✅' },
+      { label: 'Algunos, pero es irregular', value: 1, icon: '⚡' },
+      { label: 'No, cada venta es nueva', value: 0, icon: '❌' },
+    ]
+  },
+  {
+    id: 'publicidad',
+    text: '¿Usás publicidad online para atraer clientes?',
+    options: [
+      { label: 'Sí, de forma regular y medida', value: 2, icon: '✅' },
+      { label: 'A veces, sin mucho control', value: 1, icon: '⚡' },
+      { label: 'No uso publicidad paga', value: 0, icon: '❌' },
+    ]
+  },
+  {
+    id: 'web',
+    text: '¿Tenés una web o landing page activa?',
+    options: [
+      { label: 'Sí, optimizada y actualizada', value: 2, icon: '✅' },
+      { label: 'Tengo algo básico', value: 1, icon: '⚡' },
+      { label: 'No tengo presencia web', value: 0, icon: '❌' },
+    ]
+  },
+  {
+    id: 'metricas',
+    text: '¿Medís resultados de tus acciones de marketing?',
+    options: [
+      { label: 'Sí, tengo métricas claras', value: 2, icon: '✅' },
+      { label: 'Miro algunas cosas básicas', value: 1, icon: '⚡' },
+      { label: 'No mido casi nada', value: 0, icon: '❌' },
+    ]
+  },
+  {
+    id: 'diferencial',
+    text: '¿Sabés claramente por qué te eligen a vos y no a la competencia?',
+    options: [
+      { label: 'Sí, tengo propuesta de valor clara', value: 2, icon: '✅' },
+      { label: 'Más o menos, no es muy claro', value: 1, icon: '⚡' },
+      { label: 'No sé bien qué me diferencia', value: 0, icon: '❌' },
+    ]
+  },
+];
 
-      message += "<br><br><span class='text-white font-semibold'>👉 Si quieres mejorar esto, contáctame en Cinteia.</span>";
+const FINDINGS = {
+  clientes: {
+    0: { icon: '🔴', text: '<strong>Sin base de clientes recurrentes.</strong> Sin fidelización, cada mes empezás de cero. Implementar un sistema de seguimiento post-venta puede cambiar esto rápido.' },
+    1: { icon: '🟡', text: '<strong>Clientes irregulares.</strong> Hay potencial pero falta consistencia. Un sistema de contacto y seguimiento simple puede convertir compradores en clientes.' },
+  },
+  publicidad: {
+    0: { icon: '🔴', text: '<strong>Sin publicidad online.</strong> Estás dependiendo 100% del boca a boca. La publicidad digital bien configurada puede multiplicar tu alcance con poco presupuesto.' },
+    1: { icon: '🟡', text: '<strong>Publicidad sin estructura.</strong> Gastás pero sin saber qué funciona. Medir y optimizar cada peso invertido es lo que separa una campaña buena de una que drena dinero.' },
+  },
+  web: {
+    0: { icon: '🔴', text: '<strong>Sin presencia web.</strong> Hoy si no te encuentran online, no existís. Una landing clara y rápida es el primer paso para convertir visitas en consultas.' },
+    1: { icon: '🟡', text: '<strong>Web básica o desactualizada.</strong> Una presencia digital débil genera desconfianza. Mejorar la primera impresión puede aumentar las conversiones significativamente.' },
+  },
+  metricas: {
+    0: { icon: '🔴', text: '<strong>Sin métricas.</strong> Sin datos no podés mejorar. Aunque sea un número: cuántas consultas entran por semana y cuántas se convierten en ventas. Eso ya es un gran comienzo.' },
+    1: { icon: '🟡', text: '<strong>Métricas incompletas.</strong> Tenés datos pero no los estás aprovechando al máximo. Definir 3 KPIs clave y revisarlos cada semana puede transformar la toma de decisiones.' },
+  },
+  diferencial: {
+    0: { icon: '🔴', text: '<strong>Sin propuesta de valor clara.</strong> Si vos no sabés por qué te eligen, tus clientes tampoco. Definir esto es el trabajo más importante antes de invertir en marketing.' },
+    1: { icon: '🟡', text: '<strong>Diferencial difuso.</strong> Algo hay, pero no es suficientemente claro ni comunicado. Trabajar el mensaje puede mejorar drásticamente cómo te percibe el mercado.' },
+  },
+};
 
-      document.getElementById("result").innerHTML = message;
+let answers = {};
+let currentQ = 0;
+
+function initQuiz() {
+  answers = {};
+  currentQ = 0;
+
+  // Render step dots
+  const dots = document.getElementById('step-dots');
+  dots.innerHTML = QUESTIONS.map((_, i) =>
+    `<div class="step-dot" id="dot-${i}"></div>`
+  ).join('');
+
+  // Render questions
+  const container = document.getElementById('questions-container');
+  container.innerHTML = QUESTIONS.map((q, i) => `
+    <div class="question-view ${i === 0 ? 'active' : ''}" id="q-${i}">
+      <div class="q-number">Pregunta ${i + 1} de ${QUESTIONS.length}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="answer-options">
+        ${q.options.map((opt, oi) => `
+          <button class="answer-btn" onclick="selectAnswer(${i}, ${opt.value}, '${q.id}', this)">
+            <span class="answer-icon">${opt.icon}</span>
+            <span>${opt.label}</span>
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('result-view').style.display = 'none';
+  document.getElementById('cta').style.display = 'none';
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = (currentQ / QUESTIONS.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  QUESTIONS.forEach((_, i) => {
+    const dot = document.getElementById('dot-' + i);
+    if (i < currentQ) dot.className = 'step-dot done';
+    else if (i === currentQ) dot.className = 'step-dot active';
+    else dot.className = 'step-dot';
+  });
+}
+
+function selectAnswer(qIndex, value, qId, btn) {
+  // Highlight selected
+  btn.closest('.answer-options').querySelectorAll('.answer-btn')
+    .forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+
+  answers[qId] = value;
+
+  setTimeout(() => {
+    if (qIndex < QUESTIONS.length - 1) {
+      document.getElementById('q-' + qIndex).classList.remove('active');
+      currentQ = qIndex + 1;
+      document.getElementById('q-' + currentQ).classList.add('active');
+      updateProgress();
+    } else {
+      showResult();
     }
-  </script>
+  }, 320);
+}
+
+function showResult() {
+  currentQ = QUESTIONS.length;
+  updateProgress();
+
+  const total = Object.values(answers).reduce((a, b) => a + b, 0);
+  const maxScore = QUESTIONS.length * 2;
+  const pct = Math.round((total / maxScore) * 100);
+
+  // Ocultar preguntas
+  document.querySelectorAll('.question-view').forEach(v => v.classList.remove('active'));
+
+  let level, color;
+  if (pct >= 80) { level = 'Negocio saludable 🔥'; color = '#22c55e'; }
+  else if (pct >= 50) { level = 'Potencial de mejora ⚡'; color = '#eab308'; }
+  else if (pct >= 25) { level = 'Necesita optimización 🚨'; color = '#f97316'; }
+  else { level = 'Acción urgente ❌'; color = '#ef4444'; }
+
+  document.getElementById('score-num').textContent = pct + '/100';
+  document.getElementById('score-num').style.color = color;
+  document.getElementById('score-level').textContent = level;
+
+  // Findings: mostrar solo los que puntuaron < 2
+  const findingsEl = document.getElementById('findings-list');
+  const lowItems = Object.entries(answers)
+    .filter(([, v]) => v < 2)
+    .map(([id, v]) => FINDINGS[id]?.[v])
+    .filter(Boolean);
+
+  if (lowItems.length === 0) {
+    findingsEl.innerHTML = `<div class="finding-item"><span class="finding-icon">🏆</span><span class="finding-text"><strong>¡Excelente!</strong> Tu negocio está bien posicionado en todos los puntos clave. El siguiente paso es escalar y optimizar lo que ya está funcionando.</span></div>`;
+  } else {
+    findingsEl.innerHTML = lowItems.map((f, i) => `
+      <div class="finding-item" style="animation-delay:${i * 0.06}s;">
+        <span class="finding-icon">${f.icon}</span>
+        <span class="finding-text">${f.text}</span>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('result-view').style.display = 'block';
+  document.getElementById('cta').style.display = 'flex';
+  document.getElementById('step-dots').style.display = 'none';
+}
+
+function restartQuiz() {
+  document.getElementById('step-dots').style.display = 'flex';
+  initQuiz();
+}
+
+// Init
+initQuiz();
+</script>
 
 </body>
 </html>
